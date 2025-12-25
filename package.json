@@ -1,0 +1,26 @@
+{
+  "name": "event-manager-app",
+  "version": "1.0.0",
+  "description": "Event Manager with WakaTime & HackaTime Integration for Hack Club",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "cd server && node server.js",
+    "dev": "cd server && nodemon server.js",
+    "install-all": "cd server && npm install"
+  },
+  "keywords": [
+    "event-manager",
+    "wakatime",
+    "hackatime",
+    "hack-club",
+    "time-tracking",
+    "reminders",
+    "chrome-extension"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/event-manager"
+  }
+}
