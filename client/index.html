@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Manager - Hack Club Edition</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="container">
+                <h1>🎯 Event Manager</h1>
+                <p class="subtitle">Hack Club Summer Events - WakaTime & HackaTime Integrated</p>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- Dashboard Section -->
+            <section id="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Events</h3>
+                        <p class="stat-number" id="totalEvents">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Upcoming Events</h3>
+                        <p class="stat-number" id="upcomingEvents">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Time Tracked (WakaTime)</h3>
+                        <p class="stat-number" id="wakatimeHours">0h</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>HackaTime Stats</h3>
+                        <p class="stat-number" id="hackatimeHours">0h</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Event Form Section -->
+            <section id="event-form-section">
+                <h2>Create New Event</h2>
+                <form id="eventForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventTitle">Event Title *</label>
+                            <input type="text" id="eventTitle" required placeholder="Hack Club Summer Workshop">
+                        </div>
+                        <div class="form-group">
+                            <label for="eventCategory">Category</label>
+                            <select id="eventCategory">
+                                <option value="hackathon">Hackathon</option>
+                                <option value="workshop">Workshop</option>
+                                <option value="meeting">Meeting</option>
+                                <option value="project">Project</option>
+                                <option value="deadline">Deadline</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription" rows="3" placeholder="Event details..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventStartDate">Start Date *</label>
+                            <input type="datetime-local" id="eventStartDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventEndDate">End Date</label>
+                            <input type="datetime-local" id="eventEndDate">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventPriority">Priority</label>
+                            <select id="eventPriority">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="wakatimeProject">WakaTime Project</label>
+                            <input type="text" id="wakatimeProject" placeholder="project-name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reminderTime">Add Reminder</label>
+                        <input type="datetime-local" id="reminderTime">
+                        <button type="button" id="addReminderBtn" class="btn-secondary">Add Reminder</button>
+                        <div id="remindersList"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Create Event</button>
+                        <button type="button" id="cancelBtn" class="btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Events List Section -->
+            <section id="events-list-section">
+                <div class="section-header">
+                    <h2>Your Events</h2>
+                    <div class="filters">
+                        <select id="filterCategory">
+                            <option value="all">All Categories</option>
+                            <option value="hackathon">Hackathon</option>
+                            <option value="workshop">Workshop</option>
+                            <option value="meeting">Meeting</option>
+                            <option value="project">Project</option>
+                            <option value="deadline">Deadline</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <button id="syncTimeBtn" class="btn-secondary">🔄 Sync Time Tracking</button>
+                    </div>
+                </div>
+                <div id="eventsList" class="events-grid"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
