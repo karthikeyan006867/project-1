@@ -1,10 +1,14 @@
 {
   "version": 2,
-  "name": "event-manager-hackatime",
+  "name": "event-manager-enterprise",
   "builds": [
     {
       "src": "server/server.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "50mb",
+        "includeFiles": ["server/**"]
+      }
     },
     {
       "src": "client/**",
@@ -26,8 +30,13 @@
     }
   ],
   "env": {
+    "NODE_ENV": "production",
     "HACKATIME_API_KEY": "1882521f-5422-498b-a22d-85ac59259506",
     "HACKATIME_URL": "https://hackatime.hackclub.com/api/hackatime/v1",
+    "PORT": "5000"
+  },
+  "regions": ["iad1"]
+}
     "PORT": "5000"
   }
 }
