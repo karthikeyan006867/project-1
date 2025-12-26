@@ -111,11 +111,14 @@ async function handleSubmitEvent(e) {
             resetForm();
             loadEvents();
         } else {
-            showNotification('Error saving event', 'error');
+            const errorData = await response.json();
+            const errorMessage = errorData.message || 'Error saving event';
+            console.error('Server error:', errorData);
+            showNotification(`Error: ${errorMessage}`, 'error');
         }
     } catch (error) {
         console.error('Error saving event:', error);
-        showNotification('Error saving event', 'error');
+        showNotification(`Error: ${error.message || 'Failed to save event. Check console for details.'}`, 'error');
     }
 }
 

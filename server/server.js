@@ -215,24 +215,84 @@ app.get('/api/events/:id', async (req, res) => {
 
 app.post('/api/events', async (req, res) => {
   try {
+    // Validate required fields
+    if (!req.body.title || !req.body.startDate) {
+      return res.status(400).json({ 
+        message: 'Title and start date are required',
+        errors: {
+          title: !req.body.title ? 'Title is required' : null,
+          startDate: !req.body.startDate ? 'Start date is required' : null
+        }
+      });
+    }
+
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ 
+        message: 'Database is not connected. Please try again later.' 
+      });
+    }
+
     const event = new Event(req.body);
     const savedEvent = await event.save();
     res.status(201).json(savedEvent);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error creating event:', error);
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ 
+        message: 'Validation failed',
+        errors: Object.keys(error.errors).reduce((acc, key) => {
+          acc[key] = error.errors[key].message;
+          return acc;
+        }, {})
+      });
+    }
+    
+    res.status(400).json({ 
+      message: error.message || 'Failed to save event',
+      error: process.env.NODE_ENV === 'development' ? error.toString() : undefined
+    });
   }
 });
 
 app.put('/api/events/:id', async (req, res) => {
   try {
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ 
+        message: 'Database is not connected. Please try again later.' 
+      });
+    }
+
     req.body.updatedAt = Date.now();
-    const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const event = await Event.findByIdAndUpdate(req.params.id, req.body, { 
+      new: true,
+      runValidators: true
+    });
+    
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
+    
     res.json(event);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error updating event:', error);
+    
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ 
+        message: 'Validation failed',
+        errors: Object.keys(error.errors).reduce((acc, key) => {
+          acc[key] = error.errors[key].message;
+          return acc;
+        }, {})
+      });
+    }
+    
+    res.status(400).json({ 
+      message: error.message || 'Failed to update event'
+    });
   }
 });
 
