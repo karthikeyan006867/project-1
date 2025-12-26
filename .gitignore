@@ -48,3 +48,4 @@ coverage/
 # Chrome extension
 chrome-extension/*.crx
 chrome-extension/*.pem
+.vercel

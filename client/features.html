@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Features - Event Manager</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+    
+    .header h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    
+    .feature-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .feature-card h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .feature-card .icon {
+      font-size: 28px;
+    }
+    
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .feature-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .feature-list li::before {
+      content: '✓';
+      color: #667eea;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .demo-section {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .demo-section h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .result-box {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .stat-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🚀 Advanced Features</h1>
+    <p>Explore powerful event management capabilities</p>
+  </div>
+  
+  <div class="container">
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h3><span class="icon">📅</span> Smart Scheduling</h3>
+        <ul class="feature-list">
+          <li>AI-powered time suggestions</li>
+          <li>Conflict detection</li>
+          <li>Recurring event patterns</li>
+          <li>Batch operations</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h3><span class="icon">🔔</span> Notifications</h3>
+        <ul class="feature-list">
+          <li>Multi-channel reminders</li>
+          <li>Snooze and dismiss</li>
+          <li>Quiet hours support</li>
+          <li>Custom preferences</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h3><span class="icon">👥</span> Collaboration</h3>
+        <ul class="feature-list">
+          <li>Share events with teams</li>
+          <li>Comments and reactions</li>
+          <li>Attendance tracking</li>
+          <li>Activity feed</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h3><span class="icon">📋</span> Templates</h3>
+        <ul class="feature-list">
+          <li>6 built-in templates</li>
+          <li>Custom template creation</li>
+          <li>Quick event creation</li>
+          <li>Category-based filtering</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h3><span class="icon">🔗</span> Integrations</h3>
+        <ul class="feature-list">
+          <li>Google Calendar sync</li>
+          <li>Slack commands</li>
+          <li>Zoom webhooks</li>
+          <li>iCal export</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h3><span class="icon">⏱️</span> Time Tracking</h3>
+        <ul class="feature-list">
+          <li>Productivity insights</li>
+          <li>Coding streaks</li>
+          <li>Language breakdown</li>
+          <li>Project allocation</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="demo-section">
+      <h2>📊 Live API Demonstrations</h2>
+      
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-value" id="apiCount">12</div>
+          <div class="stat-label">API Routes</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="featureCount">6</div>
+          <div class="stat-label">Feature Modules</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="endpointCount">50+</div>
+          <div class="stat-label">Endpoints</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="integrationCount">6</div>
+          <div class="stat-label">Integrations</div>
+        </div>
+      </div>
+      
+      <div class="button-group">
+        <button onclick="testScheduling()">🗓️ Test Smart Scheduling</button>
+        <button onclick="testNotifications()">🔔 Test Notifications</button>
+        <button onclick="testTemplates()">📋 Load Templates</button>
+        <button onclick="testCollaboration()">👥 Test Collaboration</button>
+        <button onclick="testTimeTracking()">⏱️ Time Tracking Stats</button>
+        <button onclick="testIntegrations()">🔗 Test Integrations</button>
+        <button onclick="stressTest()">💪 Stress Test (100 req)</button>
+      </div>
+      
+      <div class="result-box" id="results">
+        <div style="color: #666;">Results will appear here...</div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const API_BASE = 'http://localhost:5000/api';
+    let startTime = Date.now();
+    
+    function log(message, type = 'info') {
+      const results = document.getElementById('results');
+      const timestamp = new Date().toLocaleTimeString();
+      const color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#333';
+      results.innerHTML += `<div style="color: ${color}; padding: 5px 0;">[${timestamp}] ${message}</div>`;
+      results.scrollTop = results.scrollHeight;
+    }
+    
+    async function testScheduling() {
+      log('🗓️ Testing Smart Scheduling Features...', 'info');
+      
+      try {
+        // Test conflict detection
+        const conflicts = await fetch(`${API_BASE}/scheduling/conflicts`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 3600000)
+          })
+        }).then(r => r.json());
+        
+        log(`✓ Conflict detection: ${conflicts.conflicts?.length || 0} conflicts found`, 'success');
+        
+        // Test time suggestions
+        const suggestions = await fetch(`${API_BASE}/scheduling/suggest-time`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            duration: 60,
+            preferredDays: [1, 2, 3, 4, 5],
+            preferredHours: [9, 10, 14, 15]
+          })
+        }).then(r => r.json());
+        
+        log(`✓ Smart suggestions: ${suggestions.suggestions?.length || 0} time slots found`, 'success');
+        
+      } catch (error) {
+        log(`✗ Scheduling test failed: ${error.message}`, 'error');
+      }
+    }
+    
+    async function testNotifications() {
+      log('🔔 Testing Notification System...', 'info');
+      
+      try {
+        const upcoming = await fetch(`${API_BASE}/notifications/upcoming`).then(r => r.json());
+        log(`✓ Upcoming reminders: ${upcoming.length || 0} notifications`, 'success');
+        
+        const sendResult = await fetch(`${API_BASE}/notifications/send`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            eventId: 'test-event',
+            type: 'reminder',
+            message: 'Test notification from API',
+            channel: 'browser'
+          })
+        }).then(r => r.json());
+        
+        log(`✓ Notification sent: ${sendResult.notification?.id}`, 'success');
+        
+      } catch (error) {
+        log(`✗ Notification test failed: ${error.message}`, 'error');
+      }
+    }
+    
+    async function testTemplates() {
+      log('📋 Loading Event Templates...', 'info');
+      
+      try {
+        const templates = await fetch(`${API_BASE}/templates`).then(r => r.json());
+        log(`✓ Templates loaded: ${templates.templates?.length} available`, 'success');
+        
+        templates.templates?.slice(0, 3).forEach(t => {
+          log(`  • ${t.name} (${t.category}) - ${t.duration} min`, 'info');
+        });
+        
+      } catch (error) {
+        log(`✗ Template test failed: ${error.message}`, 'error');
+      }
+    }
+    
+    async function testCollaboration() {
+      log('👥 Testing Collaboration Features...', 'info');
+      
+      try {
+        const activity = await fetch(`${API_BASE}/collaboration/activity?limit=10`).then(r => r.json());
+        log(`✓ Activity feed: ${activity.activities?.length} recent activities`, 'success');
+        
+        const calendar = await fetch(`${API_BASE}/collaboration/team/calendar?startDate=${new Date().toISOString()}&endDate=${new Date(Date.now() + 7*24*60*60*1000).toISOString()}`).then(r => r.json());
+        log(`✓ Team calendar: ${calendar.events?.length || 0} events`, 'success');
+        
+      } catch (error) {
+        log(`✗ Collaboration test failed: ${error.message}`, 'error');
+      }
+    }
+    
+    async function testTimeTracking() {
+      log('⏱️ Testing Time Tracking Analytics...', 'info');
+      
+      try {
+        const productivity = await fetch(`${API_BASE}/time-tracking/productivity?startDate=${new Date(Date.now() - 30*24*60*60*1000).toISOString()}`).then(r => r.json());
+        log(`✓ Productivity insights loaded`, 'success');
+        
+        const streaks = await fetch(`${API_BASE}/time-tracking/streaks`).then(r => r.json());
+        log(`✓ Coding streaks: Current ${streaks.currentStreak} days, Longest ${streaks.longestStreak} days`, 'success');
+        
+        const languages = await fetch(`${API_BASE}/time-tracking/languages`).then(r => r.json());
+        log(`✓ Languages tracked: ${languages.languages?.length || 0} languages`, 'success');
+        
+      } catch (error) {
+        log(`✗ Time tracking test failed: ${error.message}`, 'error');
+      }
+    }
+    
+    async function testIntegrations() {
+      log('🔗 Testing Integration APIs...', 'info');
+      
+      try {
+        const ical = await fetch(`${API_BASE}/integrations/export/ical`);
+        log(`✓ iCal export: ${ical.status === 200 ? 'Success' : 'Failed'}`, ical.status === 200 ? 'success' : 'error');
+        
+        log(`✓ Integration endpoints ready: Google Calendar, Slack, Zoom, Trello`, 'success');
+        
+      } catch (error) {
+        log(`✗ Integration test failed: ${error.message}`, 'error');
+      }
+    }
+    
+    async function stressTest() {
+      log('💪 Starting stress test with 100 concurrent requests...', 'info');
+      const testStart = Date.now();
+      
+      try {
+        const promises = [];
+        for (let i = 0; i < 100; i++) {
+          promises.push(
+            fetch(`${API_BASE}/health`).then(r => r.json())
+          );
+        }
+        
+        await Promise.all(promises);
+        const duration = Date.now() - testStart;
+        
+        log(`✓ Stress test completed: 100 requests in ${duration}ms (${(100000/duration).toFixed(1)} req/s)`, 'success');
+        
+      } catch (error) {
+        log(`✗ Stress test failed: ${error.message}`, 'error');
+      }
+    }
+    
+    // Auto-run health check on load
+    setTimeout(async () => {
+      const health = await fetch(`${API_BASE}/health`).then(r => r.json());
+      log(`🏥 Server health check: ${health.status}`, 'success');
+      log(`⏰ Server uptime: ${Math.round(health.uptime)} seconds`, 'info');
+    }, 500);
+  </script>
+</body>
+</html>

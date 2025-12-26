@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:5000/api';
+// Use dedicated API server (always online on Vercel)
+const API_URL = 'https://server-5i1vk5gn3-karthikeyan006867s-projects.vercel.app/api';
 
 let events = [];
 let editingEventId = null;
@@ -23,12 +24,15 @@ function setupEventListeners() {
 async function loadEvents() {
     try {
         const response = await fetch(`${API_URL}/events`);
-        events = await response.json();
+        const data = await response.json();
+        events = Array.isArray(data) ? data : [];
         displayEvents(events);
         updateStats();
     } catch (error) {
         console.error('Error loading events:', error);
-        showNotification('Error loading events', 'error');
+        events = [];
+        displayEvents(events);
+        showNotification('Error loading events. Server may be offline.', 'error');
     }
 }
 
@@ -36,7 +40,7 @@ async function loadEvents() {
 function displayEvents(eventsToDisplay) {
     const eventsList = document.getElementById('eventsList');
     
-    if (eventsToDisplay.length === 0) {
+    if (!Array.isArray(eventsToDisplay) || eventsToDisplay.length === 0) {
         eventsList.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">No events found. Create your first event!</p>';
         return;
     }

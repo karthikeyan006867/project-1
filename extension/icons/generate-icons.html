@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Extension Icons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+            background: #1a1a1a;
+            color: white;
+        }
+        canvas {
+            display: none;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        button {
+            background: #ec3750;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #d32043;
+        }
+        .preview {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .preview img {
+            border: 2px solid #ec3750;
+            border-radius: 5px;
+        }
+        .success {
+            color: #4caf50;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Generate Extension Icons</h1>
+        <p>Click the button below to generate icon files for the Chrome extension</p>
+        
+        <button onclick="generateIcons()">Generate Icons</button>
+        
+        <div class="preview" id="preview"></div>
+        <div class="success" id="message"></div>
+    </div>
+
+    <canvas id="canvas16" width="16" height="16"></canvas>
+    <canvas id="canvas48" width="48" height="48"></canvas>
+    <canvas id="canvas128" width="128" height="128"></canvas>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // Background
+            ctx.fillStyle = '#ec3750';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw calendar icon
+            const padding = size * 0.15;
+            const rectSize = size - (padding * 2);
+            
+            // Calendar body
+            ctx.fillStyle = 'white';
+            ctx.fillRect(padding, padding + size * 0.1, rectSize, rectSize - size * 0.1);
+            
+            // Calendar header
+            ctx.fillStyle = '#338eda';
+            ctx.fillRect(padding, padding, rectSize, size * 0.15);
+            
+            // Calendar rings
+            ctx.fillStyle = '#338eda';
+            const ringSize = size * 0.08;
+            ctx.fillRect(padding + rectSize * 0.2, padding - ringSize * 0.5, ringSize * 0.4, ringSize);
+            ctx.fillRect(padding + rectSize * 0.65, padding - ringSize * 0.5, ringSize * 0.4, ringSize);
+            
+            // Event dot
+            if (size >= 48) {
+                ctx.fillStyle = '#ec3750';
+                ctx.beginPath();
+                ctx.arc(size/2, size * 0.6, size * 0.12, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function downloadImage(canvas, filename) {
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    resolve(url);
+                });
+            });
+        }
+
+        async function generateIcons() {
+            const sizes = [
+                { canvas: 'canvas16', filename: 'icon16.png', size: 16 },
+                { canvas: 'canvas48', filename: 'icon48.png', size: 48 },
+                { canvas: 'canvas128', filename: 'icon128.png', size: 128 }
+            ];
+
+            const preview = document.getElementById('preview');
+            preview.innerHTML = '';
+
+            for (const {canvas, filename, size} of sizes) {
+                const canvasEl = document.getElementById(canvas);
+                drawIcon(canvasEl, size);
+                
+                // Download
+                await downloadImage(canvasEl, filename);
+                
+                // Show preview
+                const img = document.createElement('img');
+                img.src = canvasEl.toDataURL();
+                img.width = size;
+                img.height = size;
+                preview.appendChild(img);
+            }
+
+            document.getElementById('message').innerHTML = `
+                ✅ Icons generated successfully!<br>
+                <small>Check your Downloads folder for:<br>
+                icon16.png, icon48.png, icon128.png<br><br>
+                Move these files to the extension/icons/ folder</small>
+            `;
+        }
+    </script>
+</body>
+</html>

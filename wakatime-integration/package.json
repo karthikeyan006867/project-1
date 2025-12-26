@@ -1,0 +1,100 @@
+{
+  "name": "wakatime-integration",
+  "displayName": "WakaTime Integration",
+  "description": "WakaTime time tracking integration for Event Manager",
+  "version": "1.0.0",
+  "publisher": "event-manager",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "time tracking",
+    "metrics",
+    "analytics",
+    "wakatime"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "wakatime.dashboard",
+        "title": "WakaTime: Open Dashboard"
+      },
+      {
+        "command": "wakatime.today",
+        "title": "WakaTime: Show Today's Coding Time"
+      },
+      {
+        "command": "wakatime.apiKey",
+        "title": "WakaTime: Enter API Key"
+      },
+      {
+        "command": "wakatime.showLog",
+        "title": "WakaTime: Show Log"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "WakaTime",
+      "properties": {
+        "wakatime.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your WakaTime API Key",
+          "scope": "application"
+        },
+        "wakatime.debug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable debug mode for verbose logging"
+        },
+        "wakatime.disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable WakaTime tracking"
+        },
+        "wakatime.statusBarEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show WakaTime status in status bar"
+        },
+        "wakatime.heartbeatInterval": {
+          "type": "number",
+          "default": 120,
+          "description": "Time in seconds between heartbeats (default: 120)"
+        },
+        "wakatime.proxy": {
+          "type": "string",
+          "default": "",
+          "description": "Proxy server URL (optional)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.5.0"
+  }
+}

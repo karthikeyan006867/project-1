@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Event Manager Settings</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .success-message {
+            background: #33d6a6;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .info-box a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .info-box a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Event Manager Settings</h1>
+        
+        <div class="success-message" id="successMessage">
+            Settings saved successfully!
+        </div>
+
+        <div class="info-box">
+            <h3>🎯 Hack Club Integration</h3>
+            <p>This extension integrates with WakaTime and HackaTime for the Hack Club Summer Events.</p>
+            <p>Get your API keys from:</p>
+            <ul>
+                <li>WakaTime: <a href="https://wakatime.com/settings/account" target="_blank">wakatime.com/settings/account</a></li>
+                <li>HackaTime: <a href="https://hackatime.hackclub.com/settings/account" target="_blank">hackatime.hackclub.com</a></li>
+            </ul>
+        </div>
+
+        <form id="settingsForm">
+            <div class="form-group">
+                <label for="apiUrl">API Server URL</label>
+                <input type="text" id="apiUrl" placeholder="http://localhost:5000" value="http://localhost:5000">
+            </div>
+
+            <div class="form-group">
+                <label for="wakatimeApiKey">WakaTime API Key</label>
+                <input type="password" id="wakatimeApiKey" placeholder="Enter your WakaTime API key">
+            </div>
+
+            <div class="form-group">
+                <label for="hackatimeApiKey">HackaTime API Key</label>
+                <input type="password" id="hackatimeApiKey" placeholder="Enter your HackaTime API key">
+            </div>
+
+            <div class="form-group">
+                <label for="hackatimeUrl">HackaTime URL</label>
+                <input type="text" id="hackatimeUrl" placeholder="https://hackatime.hackclub.com" value="https://hackatime.hackclub.com">
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="enableNotifications" checked>
+                    Enable event reminder notifications
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="enableAutoSync" checked>
+                    Enable automatic time tracking sync (every 30 minutes)
+                </label>
+            </div>
+
+            <button type="submit">Save Settings</button>
+        </form>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Event Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="analytics.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="container">
+                <nav class="nav-bar">
+                    <h1>📊 Analytics Dashboard</h1>
+                    <div class="nav-links">
+                        <a href="index.html">← Back to Events</a>
+                        <button id="refreshDataBtn" class="btn-secondary">🔄 Refresh Data</button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main class="container analytics-container">
+            <!-- Summary Cards -->
+            <section class="summary-section">
+                <h2>Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card gradient-1">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-content">
+                            <h3>Total Events</h3>
+                            <p class="stat-number" id="totalEvents">0</p>
+                            <p class="stat-sub">This Month: <span id="monthlyEvents">0</span></p>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-2">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <h3>Completion Rate</h3>
+                            <p class="stat-number" id="completionRate">0%</p>
+                            <p class="stat-sub">Completed: <span id="completedEvents">0</span></p>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-3">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-content">
+                            <h3>Total Time Tracked</h3>
+                            <p class="stat-number" id="totalTime">0h</p>
+                            <p class="stat-sub">Avg/Event: <span id="avgTime">0h</span></p>
+                        </div>
+                    </div>
+                    <div class="stat-card gradient-4">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-content">
+                            <h3>Current Streak</h3>
+                            <p class="stat-number" id="currentStreak">0</p>
+                            <p class="stat-sub">Days active</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <h3>Time Tracking Trend (30 Days)</h3>
+                    <canvas id="timeSeriesChart"></canvas>
+                </div>
+                <div class="chart-row">
+                    <div class="chart-container half">
+                        <h3>Events by Category</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="chart-container half">
+                        <h3>Events by Priority</h3>
+                        <canvas id="priorityChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h3>Productivity by Hour of Day</h3>
+                    <canvas id="hourlyChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Time by Source</h3>
+                    <canvas id="sourceChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Goals Section -->
+            <section class="goals-section">
+                <h2>Goals & Progress</h2>
+                <div class="goals-grid">
+                    <div class="goal-card">
+                        <h3>Daily Goal</h3>
+                        <div class="progress-ring">
+                            <svg class="progress-ring-svg" width="120" height="120">
+                                <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                <circle class="progress-ring-circle" id="dailyProgress" cx="60" cy="60" r="54"></circle>
+                            </svg>
+                            <div class="progress-text" id="dailyGoalText">0%</div>
+                        </div>
+                        <p class="goal-details" id="dailyGoalDetails">0h / 4h</p>
+                    </div>
+                    <div class="goal-card">
+                        <h3>Weekly Goal</h3>
+                        <div class="progress-ring">
+                            <svg class="progress-ring-svg" width="120" height="120">
+                                <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                <circle class="progress-ring-circle" id="weeklyProgress" cx="60" cy="60" r="54"></circle>
+                            </svg>
+                            <div class="progress-text" id="weeklyGoalText">0%</div>
+                        </div>
+                        <p class="goal-details" id="weeklyGoalDetails">0h / 25h</p>
+                    </div>
+                    <div class="goal-card">
+                        <h3>Monthly Goal</h3>
+                        <div class="progress-ring">
+                            <svg class="progress-ring-svg" width="120" height="120">
+                                <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                <circle class="progress-ring-circle" id="monthlyProgress" cx="60" cy="60" r="54"></circle>
+                            </svg>
+                            <div class="progress-text" id="monthlyGoalText">0%</div>
+                        </div>
+                        <p class="goal-details" id="monthlyGoalDetails">0h / 100h</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Leaderboard -->
+            <section class="leaderboard-section">
+                <h2>Top Projects</h2>
+                <div id="projectsLeaderboard" class="leaderboard-list"></div>
+            </section>
+
+            <!-- Predictions -->
+            <section class="predictions-section">
+                <h2>Predictions & Insights</h2>
+                <div class="predictions-grid">
+                    <div class="prediction-card">
+                        <h3>📈 Projected Next Month</h3>
+                        <p class="prediction-value" id="projectedHours">0h</p>
+                        <p class="prediction-desc">Based on current trends</p>
+                    </div>
+                    <div class="prediction-card">
+                        <h3>⏰ Most Productive Hour</h3>
+                        <p class="prediction-value" id="productiveHour">--:--</p>
+                        <p class="prediction-desc">Peak productivity time</p>
+                    </div>
+                    <div class="prediction-card">
+                        <h3>🎯 Suggested Daily Goal</h3>
+                        <p class="prediction-value" id="suggestedGoal">0h</p>
+                        <p class="prediction-desc">To improve performance</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Export Section -->
+            <section class="export-section">
+                <h2>Export Data</h2>
+                <div class="export-buttons">
+                    <button id="exportCSVBtn" class="btn-primary">📊 Export to CSV</button>
+                    <button id="exportJSONBtn" class="btn-primary">📄 Export to JSON</button>
+                    <button id="exportPDFBtn" class="btn-primary">📑 Generate PDF Report</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="analytics.js"></script>
+</body>
+</html>

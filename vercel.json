@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "name": "event-manager-hackatime",
+  "builds": [
+    {
+      "src": "server/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "client/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/server.js"
+    },
+    {
+      "src": "/",
+      "dest": "client/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "client/$1"
+    }
+  ],
+  "env": {
+    "HACKATIME_API_KEY": "1882521f-5422-498b-a22d-85ac59259506",
+    "HACKATIME_URL": "https://hackatime.hackclub.com/api/hackatime/v1",
+    "PORT": "5000"
+  }
+}
