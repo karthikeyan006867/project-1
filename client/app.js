@@ -1,16 +1,66 @@
-// Use dedicated API server (always online on Vercel)
-const API_URL = 'https://server-5i1vk5gn3-karthikeyan006867s-projects.vercel.app/api';
+// API Configuration with fallback
+const VERCEL_API = 'https://server-5i1vk5gn3-karthikeyan006867s-projects.vercel.app/api';
+const LOCAL_API = 'http://localhost:5000/api';
+
+// Auto-detect which server to use
+let API_URL = VERCEL_API;
+let isServerOnline = true;
+let useLocalStorage = false;
 
 let events = [];
 let editingEventId = null;
 let reminders = [];
 
 // Initialize app
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await checkServerHealth();
     loadEvents();
     loadStats();
     setupEventListeners();
 });
+
+// Check server health and fallback to localStorage if needed
+async function checkServerHealth() {
+    try {
+        const response = await fetch(`${VERCEL_API}/health`, { 
+            method: 'GET',
+            signal: AbortSignal.timeout(5000)
+        });
+        if (response.ok) {
+            API_URL = VERCEL_API;
+            isServerOnline = true;
+            useLocalStorage = false;
+            console.log('✅ Vercel server online');
+            return;
+        }
+    } catch (error) {
+        console.warn('⚠️ Vercel server offline, trying local server...');
+    }
+
+    // Try local server
+    try {
+        const response = await fetch(`${LOCAL_API}/health`, { 
+            method: 'GET',
+            signal: AbortSignal.timeout(3000)
+        });
+        if (response.ok) {
+            API_URL = LOCAL_API;
+            isServerOnline = true;
+            useLocalStorage = false;
+            console.log('✅ Local server online');
+            showNotification('Connected to local server', 'info');
+            return;
+        }
+    } catch (error) {
+        console.warn('⚠️ Local server also offline');
+    }
+
+    // Fallback to localStorage
+    isServerOnline = false;
+    useLocalStorage = true;
+    console.log('📦 Using local storage (offline mode)');
+    showNotification('Server offline - Using local storage. Your data is saved locally.', 'warning');
+}
 
 function setupEventListeners() {
     document.getElementById('eventForm').addEventListener('submit', handleSubmitEvent);
@@ -23,16 +73,40 @@ function setupEventListeners() {
 // Load all events
 async function loadEvents() {
     try {
-        const response = await fetch(`${API_URL}/events`);
+        if (useLocalStorage) {
+            // Load from localStorage
+            const stored = localStorage.getItem('events');
+            events = stored ? JSON.parse(stored) : [];
+            displayEvents(events);
+            updateStats();
+            return;
+        }
+
+        const response = await fetch(`${API_URL}/events`, {
+            signal: AbortSignal.timeout(10000)
+        });
         const data = await response.json();
         events = Array.isArray(data) ? data : [];
+        
+        // Save to localStorage as backup
+        localStorage.setItem('events', JSON.stringify(events));
+        
         displayEvents(events);
         updateStats();
     } catch (error) {
         console.error('Error loading events:', error);
-        events = [];
+        
+        // Fallback to localStorage
+        const stored = localStorage.getItem('events');
+        events = stored ? JSON.parse(stored) : [];
         displayEvents(events);
-        showNotification('Error loading events. Server may be offline.', 'error');
+        updateStats();
+        
+        if (!useLocalStorage) {
+            useLocalStorage = true;
+            isServerOnline = false;
+            showNotification('Server offline - Switched to local storage mode', 'warning');
+        }
     }
 }
 
@@ -87,22 +161,51 @@ async function handleSubmitEvent(e) {
         category: document.getElementById('eventCategory').value,
         priority: document.getElementById('eventPriority').value,
         wakatimeProject: document.getElementById('wakatimeProject').value,
-        reminders: reminders
+        reminders: reminders,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
     };
 
     try {
+        // Offline mode - use localStorage
+        if (useLocalStorage) {
+            const stored = localStorage.getItem('events');
+            let localEvents = stored ? JSON.parse(stored) : [];
+            
+            if (editingEventId) {
+                // Update existing event
+                const index = localEvents.findIndex(e => e._id === editingEventId);
+                if (index !== -1) {
+                    localEvents[index] = { ...localEvents[index], ...eventData, _id: editingEventId };
+                }
+            } else {
+                // Create new event
+                eventData._id = 'local_' + Date.now();
+                localEvents.push(eventData);
+            }
+            
+            localStorage.setItem('events', JSON.stringify(localEvents));
+            showNotification((editingEventId ? 'Event updated!' : 'Event created!') + ' (Saved locally)', 'success');
+            resetForm();
+            loadEvents();
+            return;
+        }
+
+        // Online mode - use server
         let response;
         if (editingEventId) {
             response = await fetch(`${API_URL}/events/${editingEventId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(eventData)
+                body: JSON.stringify(eventData),
+                signal: AbortSignal.timeout(10000)
             });
         } else {
             response = await fetch(`${API_URL}/events`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(eventData)
+                body: JSON.stringify(eventData),
+                signal: AbortSignal.timeout(10000)
             });
         }
 
@@ -118,7 +221,16 @@ async function handleSubmitEvent(e) {
         }
     } catch (error) {
         console.error('Error saving event:', error);
-        showNotification(`Error: ${error.message || 'Failed to save event. Check console for details.'}`, 'error');
+        
+        // Fallback to localStorage on network error
+        if (!useLocalStorage) {
+            useLocalStorage = true;
+            showNotification('Server unavailable. Saving locally...', 'warning');
+            // Retry saving to localStorage
+            setTimeout(() => handleSubmitEvent(e), 100);
+        } else {
+            showNotification(`Error: ${error.message || 'Failed to save event'}`, 'error');
+        }
     }
 }
 
@@ -152,8 +264,20 @@ async function deleteEvent(id) {
     if (!confirm('Are you sure you want to delete this event?')) return;
     
     try {
+        if (useLocalStorage) {
+            // Delete from localStorage
+            const stored = localStorage.getItem('events');
+            let localEvents = stored ? JSON.parse(stored) : [];
+            localEvents = localEvents.filter(e => e._id !== id);
+            localStorage.setItem('events', JSON.stringify(localEvents));
+            showNotification('Event deleted (from local storage)', 'success');
+            loadEvents();
+            return;
+        }
+
         const response = await fetch(`${API_URL}/events/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            signal: AbortSignal.timeout(10000)
         });
         
         if (response.ok) {
@@ -164,7 +288,14 @@ async function deleteEvent(id) {
         }
     } catch (error) {
         console.error('Error deleting event:', error);
-        showNotification('Error deleting event', 'error');
+        
+        // Fallback to localStorage
+        if (!useLocalStorage) {
+            useLocalStorage = true;
+            setTimeout(() => deleteEvent(id), 100);
+        } else {
+            showNotification('Error deleting event', 'error');
+        }
     }
 }
 
